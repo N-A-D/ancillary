@@ -533,7 +533,7 @@ namespace ancillary {
 			auto equal = [comp = Comp(), ext_key = ExtKey()](const auto& lhs, const auto& rhs) {
 				return !comp(ext_key(lhs), ext_key(rhs)) && !comp(ext_key(rhs), ext_key(lhs));
 			};
-			return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+			return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), equal);
 		}
 
 		template <class Val, class Comp, class Alloc, class ExtKey, bool isMulti>
