@@ -73,39 +73,39 @@ namespace ancillary {
 			return *this;
 		}
 
-		using typename tree_type::begin;
-		using typename tree_type::cbegin;
-		using typename tree_type::end;
-		using typename tree_type::cend;
+		using tree_type::begin;
+		using tree_type::cbegin;
+		using tree_type::end;
+		using tree_type::cend;
 
-		using typename tree_type::rbegin;
-		using typename tree_type::crbegin;
-		using typename tree_type::rend;
-		using typename tree_type::crend;
+		using tree_type::rbegin;
+		using tree_type::crbegin;
+		using tree_type::rend;
+		using tree_type::crend;
 
-		using typename tree_type::empty;
-		using typename tree_type::size;
-		using typename tree_type::max_size;
-		using typename tree_type::capacity;
-		using typename tree_type::reserve;
-		using typename tree_type::shrink_to_fit;
+		using tree_type::empty;
+		using tree_type::size;
+		using tree_type::max_size;
+		using tree_type::capacity;
+		using tree_type::reserve;
+		using tree_type::shrink_to_fit;
 
-		using typename tree_type::clear;
-		using typename tree_type::insert;
-		using typename tree_type::emplace;
-		using typename tree_type::emplace_hint;
-		using typename tree_type::erase;
-		using typename tree_type::swap;
+		using tree_type::clear;
+		using tree_type::insert;
+		using tree_type::emplace;
+		using tree_type::emplace_hint;
+		using tree_type::erase;
+		using tree_type::swap;
 
-		using typename tree_type::count;
-		using typename tree_type::find;
-		using typename tree_type::contains;
-		using typename tree_type::equal_range;
-		using typename tree_type::lower_bound;
-		using typename tree_type::upper_bound;
+		using tree_type::count;
+		using tree_type::find;
+		using tree_type::contains;
+		using tree_type::equal_range;
+		using tree_type::lower_bound;
+		using tree_type::upper_bound;
 
-		using typename tree_type::key_comp;
-		using typename tree_type::value_comp;
+		using tree_type::key_comp;
+		using tree_type::value_comp;
 
 	};
 
