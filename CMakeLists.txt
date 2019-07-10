@@ -1,9 +1,20 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.8)
 
-project ("ancillary")
+project (ancillary)
 
-# Include sub-projects.
-add_subdirectory ("ancillary")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(
+	${PROJECT_NAME}
+	INTERFACE
+		${PROJECT_SOURCE_DIR}/include
+)
+
+option(BUILD_ANCILLARY_TESTS "Build the ancillary library tests" ON)
+if (BUILD_ANCILLARY_TESTS)
+	enable_testing()
+	add_subdirectory(test)
+endif()
