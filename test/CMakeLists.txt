@@ -21,3 +21,5 @@ macro(package_add_test TESTNAME)
     add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 endmacro()
+
+package_add_test(flat_set_tests flat_set.cpp)
