@@ -13,8 +13,8 @@ target_include_directories(
 		${PROJECT_SOURCE_DIR}/include
 )
 
-option(BUILD_ANCILLARY_TESTS "Build the ancillary library tests" ON)
-if (BUILD_ANCILLARY_TESTS)
+option(BUILD_ANCILLARY_LIBRARY_TESTS "Build the ancillary library tests" ON)
+if (BUILD_ANCILLARY_LIBRARY_TESTS)
 	enable_testing()
 	add_subdirectory(test)
 endif()
