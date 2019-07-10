@@ -73,6 +73,8 @@ namespace ancillary {
 			return *this;
 		}
 
+		using tree_type::get_allocator;
+
 		using tree_type::begin;
 		using tree_type::cbegin;
 		using tree_type::end;
