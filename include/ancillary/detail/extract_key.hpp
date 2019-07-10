@@ -20,7 +20,7 @@ namespace ancillary {
 
 		template <
 			class F,
-			class S,
+			class S
 		> struct select1st<std::pair<F, S>>	{
 			using type = F;
 			const F& operator()(const std::pair<F, S>& p) const {
