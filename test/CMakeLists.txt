@@ -24,3 +24,5 @@ endmacro()
 
 package_add_test(flat_set_tests flat_set.cpp)
 package_add_test(flat_map_tests flat_map.cpp)
+package_add_test(flat_multiset_tests flat_multiset.cpp)
+package_add_test(flat_multimap_tests flat_multimap.cpp)
