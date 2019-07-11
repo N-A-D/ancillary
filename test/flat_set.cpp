@@ -3,41 +3,14 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include "employee.hpp"
+#include "constants.hpp"
 #include "../include/ancillary/container/flat_set.hpp"
-
-class Employee { // For testing transparent comparison functors
-public:
-	Employee()
-		: id(s_id++), name("Employee #" + std::to_string(id)) {}
-
-	int get_id() const noexcept { return id; }
-	std::string get_name() const noexcept { return name; }
-private:
-	inline static int s_id = 0;
-	int id;
-	std::string name;
-};
-
-struct EmployeeCompare {
-
-	using is_transparent = std::true_type;
-
-	bool operator()(const Employee& lhs, const Employee& rhs) const noexcept {
-		return lhs.get_id() < rhs.get_id();
-	}
-	bool operator()(const Employee& lhs, int id) const noexcept {
-		return lhs.get_id() < id;
-	}
-	bool operator()(int id, const Employee& rhs) const noexcept {
-		return id < rhs.get_id();
-	}
-};
 
 using set_t = ancillary::flat_set<int>;
 
 std::mt19937 gen{ std::random_device{}() };
 
-const std::size_t N = 200;
 
 TEST(FlatSetTests, ConstructorTests) {
 	set_t s1;

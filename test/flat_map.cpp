@@ -2,6 +2,7 @@
 #include <random>
 #include <vector>
 #include <algorithm>
+#include "constants.hpp"
 #include "../include/ancillary/container/flat_map.hpp"
 
 using map_t = ancillary::flat_map<int, int>;
@@ -17,8 +18,6 @@ struct CompareEqual {
 };
 
 std::mt19937 gen{ std::random_device{}() };
-
-const std::size_t N = 200;
 
 TEST(FlatMapTests, ConstructorTests) {
 	map_t m1;
