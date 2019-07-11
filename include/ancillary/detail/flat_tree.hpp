@@ -383,7 +383,7 @@ namespace ancillary {
 
 			template <class RndIt, class Key>
 			RndIt lower_bound_impl(RndIt first, RndIt last, const Key& key) const {
-				difference_type len, step;
+				typename std::iterator_traits<RndIt>::difference_type len, step;
 				len = last - first;
 				RndIt mid;
 				while (len > 0) {
@@ -402,7 +402,7 @@ namespace ancillary {
 
 			template <class RndIt, class Key>
 			RndIt upper_bound_impl(RndIt first, RndIt last, const Key& key) const {
-				difference_type len, step;
+				typename std::iterator_traits<RndIt>::difference_type len, step;
 				len = last - first;
 				RndIt mid;
 				while (len > 0) {
@@ -438,7 +438,7 @@ namespace ancillary {
 
 			template <class... Args>
 			iterator emplace_hint_unique(const_iterator hint, Args&&... args) {
-				assert(iterator_in_range(hint));
+				assert(iterator_in_range(hint) && "Iterator out of range!");
 				difference_type step = hint - cbegin();
 				m_data.emplace_back(std::forward<Args>(args)...);
 				iterator pos = begin() + step;
@@ -491,7 +491,7 @@ namespace ancillary {
 
 			template <class... Args>
 			iterator emplace_hint_multi(const_iterator hint, Args&&... args) {
-				assert(iterator_in_range(hint));
+				assert(iterator_in_range(hint) && "Iterator out of range!");
 				difference_type step = hint - cbegin();
 				m_data.emplace_back(std::forward<Args>(args)...);
 				iterator pos = begin() + step;
