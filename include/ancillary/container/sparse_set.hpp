@@ -15,8 +15,8 @@ namespace ancillary {
 			using iterator_category = std::forward_iterator_tag;
 			using value_type        = typename SparseSet::value_type;
 			using difference_type   = typename SparseSet::difference_type;
-			using reference         = typename SparseSet::reference;
-			using pointer           = typename SparseSet::pointer;
+			using reference         = typename SparseSet::const_reference;
+			using pointer           = typename SparseSet::const_pointer;
 
 			sparse_set_iterator() = default;
 
@@ -34,7 +34,7 @@ namespace ancillary {
 
 			reference operator*() const {
 				assert(valid() && "Invalid iterator!");
-				return m_it;
+				return *m_it;
 			}
 
 			pointer operator->() const {
@@ -103,7 +103,14 @@ namespace ancillary {
 			, m_sparse() {}
 
 		sparse_set(const sparse_set&) = default;
-		sparse_set(sparse_set&&) = default;
+
+		sparse_set(sparse_set&& other)
+			: m_size(other.m_size)
+			, m_dense(std::move(other.m_dense))
+			, m_sparse(std::move(other.m_sparse))
+		{
+			other.m_size = 0;
+		}
 
 		template <class InIt>
 		sparse_set(InIt first, InIt last)
@@ -118,12 +125,20 @@ namespace ancillary {
 		~sparse_set() = default;
 
 		sparse_set& operator=(const sparse_set&) = default;
-		sparse_set& operator=(sparse_set&&) = default;
-		sparse_set& operator=(std::initializer_list<value_type> list) {
+
+		sparse_set& operator=(sparse_set&& other) {
 			if (this != &other) {
-				clear();
-				insert(list);
+				m_size = other.m_size;
+				m_dense = std::move(other.m_dense);
+				m_sparse = std::move(other.m_dense);
+				other.m_size = 0;
 			}
+			return *this;
+		}
+		
+		sparse_set& operator=(std::initializer_list<value_type> list) {
+			clear();
+			insert(list);
 			return *this;
 		}
 
@@ -144,9 +159,9 @@ namespace ancillary {
 			if (contains(v))
 				return;
 			if (m_sparse.size() <= v)
-				sparse.resize(v + 1, 0);
+				m_sparse.resize(v + 1, 0);
 			if (m_dense.size() <= m_size)
-				m_dense.resive(m_size + 1, 0);
+				m_dense.resize(m_size + 1, 0);
 			m_sparse[v] = m_size;
 			m_dense[m_size] = v;
 			++m_size;
