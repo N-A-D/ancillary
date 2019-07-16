@@ -100,12 +100,12 @@ namespace ancillary {
 				return try_emplace(key).first->second;
 		}
 
-		const mapped_type& operator[](const key_type& key) const {
+		mapped_type& operator[](key_type&& key) {
 			auto it = find(key);
 			if (it != end())
 				return it->second;
 			else
-				return try_emplace(key).first->second;
+				return try_emplace(std::move(key)).first->second;
 		}
 
 		template <class M>
