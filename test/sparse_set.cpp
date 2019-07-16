@@ -51,12 +51,31 @@ TEST(SparseSetTests, IteratorTests) {
 	auto it = ss1.begin();
 	ASSERT_EQ(*it, 1);
 	++it;
-	ASSERT_EQ(*it, 2);
 
 	auto it2 = ss1.begin();
 	ASSERT_NE(it, it2);
 	it2++;
 	ASSERT_EQ(it, it2);
+
+	ASSERT_EQ(*it, 2);
+	++it;
+	ASSERT_EQ(*it, 3);
+	++it;
+	ASSERT_EQ(*it, 4);
+	++it;
+	ASSERT_EQ(*it, 5);
+
+	auto rit = ss1.rbegin();
+	ASSERT_EQ(*rit, 5);
+	++rit;
+	ASSERT_EQ(*rit, 4);
+	++rit;
+	ASSERT_EQ(*rit, 3);
+	++rit;
+	ASSERT_EQ(*rit, 2);
+	++rit;
+	ASSERT_EQ(*rit, 1);
+	++rit;
 }
 
 TEST(SparseSetTests, InsertionTests) {
@@ -85,7 +104,15 @@ TEST(SparseSetTests, ErasingTests) {
 		set.erase(integer);
 		ASSERT_FALSE(set.contains(integer));
 	}
-
+	set.insert(integers.begin(), integers.end());
+	auto it = set.begin();
+	for (auto i = 0; i != integers.size() / 2; ++i)
+		++it;
+	set.erase(it, set.end());
+	for (auto i = integers.begin() + integers.size() / 2; i != integers.end(); ++i)
+		ASSERT_FALSE(set.contains(*i));
+	for (auto i = integers.begin(); i != integers.begin() + integers.size() / 2; ++i)
+		ASSERT_TRUE(set.contains(*i));
 }
 
 TEST(SparseSetTests, SwapTests) {

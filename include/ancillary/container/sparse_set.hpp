@@ -11,8 +11,8 @@ namespace ancillary {
 			class SparseSet
 		> class sparse_set_iterator {
 		public:
-
-			using iterator_category = std::forward_iterator_tag;
+			
+			using iterator_category = std::bidirectional_iterator_tag;
 			using value_type        = typename SparseSet::value_type;
 			using difference_type   = typename SparseSet::difference_type;
 			using reference         = typename SparseSet::const_reference;
@@ -51,6 +51,19 @@ namespace ancillary {
 			sparse_set_iterator operator++(int) {
 				sparse_set_iterator tmp(*this);
 				++*this;
+				return tmp;
+			}
+
+			sparse_set_iterator& operator--() {
+				assert(valid() && "Invalid iterator!");
+				--m_it;
+				assert(m_it >= m_set->data() && "Decrement out of bounds!");
+				return *this;
+			}
+
+			sparse_set_iterator operator--(int) {
+				sparse_set_iterator tmp(*this);
+				--*this;
 				return tmp;
 			}
 
@@ -94,6 +107,7 @@ namespace ancillary {
 		using const_reference        = typename container_type::const_reference;
 		using const_pointer          = typename container_type::const_pointer;
 		using const_iterator         = detail::sparse_set_iterator<sparse_set<T>>;
+		using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 		friend class const_iterator;
 
@@ -149,6 +163,12 @@ namespace ancillary {
 
 		const_iterator end() const noexcept { return const_iterator(this, data() + m_size); }
 		const_iterator cend() const noexcept { return const_iterator(this, data() + m_size); }
+
+		const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(cend()); }
+		const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(cend()); }
+
+		const_reverse_iterator rend() const noexcept { return const_reverse_iterator(crbegin()); }
+		const_reverse_iterator crend() const noexcept { return const_reverse_iterator(crbegin()); }
 
 		bool empty() const noexcept { return size() == 0; }
 		size_type size() const noexcept { return m_size; }
