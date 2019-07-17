@@ -10,7 +10,7 @@ namespace ancillary {
 		template <
 			class Compare,
 			class Key,
-			class = void
+			class = std::void_t<>
 		> struct is_transparent
 			: std::false_type {};
 		
