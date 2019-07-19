@@ -10,7 +10,8 @@ add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(
 	${PROJECT_NAME}
 	INTERFACE
-		${PROJECT_SOURCE_DIR}/include
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>
 )
 
 option(BUILD_ANCILLARY_LIBRARY_TESTS "Build the ancillary library tests" ON)
