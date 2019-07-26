@@ -94,12 +94,13 @@ namespace ancillary {
 	}
 
 	template <
-		class T
+		class T,
+		class Allocator = std::allocator<T>
 	> class sparse_set {
 	public:
 		static_assert(std::is_unsigned_v<T>);
 
-		using container_type         = std::vector<T>;
+		using container_type         = std::vector<T, Allocator>;
 		using value_type             = typename container_type::value_type;
 		using size_type              = typename container_type::size_type;
 		using difference_type        = typename container_type::difference_type;
