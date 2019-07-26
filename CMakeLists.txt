@@ -14,7 +14,7 @@ target_include_directories(
 		$<INSTALL_INTERFACE:include>
 )
 
-option(BUILD_ANCILLARY_LIBRARY_TESTS "Build the ancillary library tests" ON)
+option(BUILD_ANCILLARY_LIBRARY_TESTS "Build the ancillary library tests")
 if (BUILD_ANCILLARY_LIBRARY_TESTS)
 	enable_testing()
 	add_subdirectory(test)
