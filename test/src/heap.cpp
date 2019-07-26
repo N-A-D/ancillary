@@ -2,8 +2,8 @@
 #include <vector>
 #include <cstdlib>
 #include <algorithm>
-#include "constants.hpp"
-#include "../include/ancillary/algorithm/heap.hpp"
+#include "../include/constants.hpp"
+#include "../../include/ancillary/algorithm/heap.hpp"
 
 TEST(HeapTests, MakeHeapTests) {
 	std::vector<int> nums;
