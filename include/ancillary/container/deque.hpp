@@ -425,6 +425,11 @@ namespace ancillary {
 			return std::min<size_type>(alloc_traits::max_size(m_alloc), std::numeric_limits<difference_type>::max());
 		}
 		size_type capacity() const noexcept { return m_limit - m_data; }
+		void reserve(size_type new_cap) {
+			if (new_cap < capacity())
+				return;
+			expand(new_cap);
+		}
 		void shrink_to_fit() {
 			if (empty())
 				return;
@@ -640,6 +645,18 @@ namespace ancillary {
 				}
 			}
 			clear_and_deallocate();
+		}
+
+		void expand(size_type new_cap) {
+			static_assert(std::is_nothrow_move_constructible_v<T> || std::is_copy_constructible_v<T>);
+			size_type new_size = m_size;
+			pointer new_data = allocate(new_cap);
+			migrate(new_data);
+			m_size = new_size;
+			m_data = m_head = new_data;
+			m_tail = m_head + m_size;
+			m_limit = m_data + new_cap;
+			assert(!full());
 		}
 
 		void expand() {
