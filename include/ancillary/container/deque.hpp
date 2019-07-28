@@ -201,17 +201,17 @@ namespace ancillary {
 		using alloc_traits = std::allocator_traits<Allocator>;
 	public:
 
-		using value_type = T;
-		using allocator_type = Allocator;
-		using size_type = std::size_t;
-		using difference_type = std::ptrdiff_t;
-		using reference = value_type & ;
-		using const_reference = const value_type&;
-		using pointer = typename alloc_traits::pointer;
-		using const_pointer = typename alloc_traits::const_pointer;
-		using iterator = detail::deque_iterator<deque<T, Allocator>, false>;
-		using const_iterator = detail::deque_iterator<deque<T, Allocator>, true>;
-		using reverse_iterator = std::reverse_iterator<iterator>;
+		using value_type             = T;
+		using allocator_type         = Allocator;
+		using size_type              = std::size_t;
+		using difference_type        = std::ptrdiff_t;
+		using reference              = value_type & ;
+		using const_reference        = const value_type&;
+		using pointer                = typename alloc_traits::pointer;
+		using const_pointer          = typename alloc_traits::const_pointer;
+		using iterator               = detail::deque_iterator<deque<T, Allocator>, false>;
+		using const_iterator         = detail::deque_iterator<deque<T, Allocator>, true>;
+		using reverse_iterator       = std::reverse_iterator<iterator>;
 		using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 		friend class iterator;
@@ -425,6 +425,11 @@ namespace ancillary {
 			return std::min<size_type>(alloc_traits::max_size(m_alloc), std::numeric_limits<difference_type>::max());
 		}
 		size_type capacity() const noexcept { return m_limit - m_data; }
+		void shrink_to_fit() {
+			if (empty())
+				return;
+			contract();
+		}
 
 		////////////////////////////////////////////////////////////////////////////////
 		//                                Modifiers                                   //
@@ -651,6 +656,19 @@ namespace ancillary {
 			assert(!full());
 		}
 
+		void contract() {
+			static_assert(std::is_nothrow_move_constructible_v<T> || std::is_copy_constructible_v<T>);
+			assert(!full());
+			size_type new_size = m_size;
+			pointer new_data = allocate(m_size);
+			migrate(new_data);
+			m_size = new_size;
+			m_data = new_data;
+			m_limit = m_data + m_size;
+			m_head = m_tail = m_data;
+			assert(full());
+		}
+
 		////////////////////////////////////////////////////////////////////////////////
 		//                              Initialization                                //
 		////////////////////////////////////////////////////////////////////////////////
@@ -663,39 +681,19 @@ namespace ancillary {
 		void initialize_default_construct_n(size_type n) {
 			static_assert(std::is_default_constructible_v<T>);
 			m_size = n;
-			size_type cap = generate_size_bigger_than_or_equal(m_size);
-			if (m_size == cap) {
-				m_data = allocate(m_size);
-				m_limit = m_data + m_size;
-				std::uninitialized_default_construct(m_data, m_limit);
-				m_head = m_tail = m_data;
-			}
-			else {
-				m_data = allocate(cap);
-				m_limit = m_data + cap;
-				std::uninitialized_default_construct_n(m_data, m_size);
-				m_head = m_data;
-				m_tail = m_data + m_size;
-			}
+			m_data = allocate(m_size);
+			m_limit = m_data + m_size;
+			std::uninitialized_default_construct(m_data, m_limit);
+			m_head = m_tail = m_data;
 		}
 
 		void initialize_fill_n(size_type n, const value_type& value) {
 			static_assert(std::is_copy_constructible_v<T>);
 			m_size = n;
-			size_type cap = generate_size_bigger_than_or_equal(m_size);
-			if (m_size == cap) {
-				m_data = allocate(m_size);
-				m_limit = m_data + m_size;
-				std::uninitialized_fill(m_data, m_limit, value);
-				m_head = m_tail = m_data;
-			}
-			else {
-				m_data = allocate(cap);
-				m_limit = m_data + cap;
-				std::uninitialized_fill_n(m_data, m_size, value);
-				m_head = m_data;
-				m_tail = m_data + m_size;
-			}
+			m_data = allocate(m_size);
+			m_limit = m_data + m_size;
+			std::uninitialized_fill(m_data, m_limit, value);
+			m_head = m_tail = m_data;
 		}
 
 		template <class InIt, class = std::enable_if_t<detail::is_iterator_v<InIt>>>
@@ -703,19 +701,9 @@ namespace ancillary {
 			static_assert(std::is_convertible_v<typename std::iterator_traits<InIt>::value_type, value_type>);
 			static_assert(std::is_copy_constructible_v<T>);
 			m_size = std::distance(first, last);
-			size_type cap = generate_size_bigger_than_or_equal(m_size);
-			if (m_size == cap) {
-				m_data = allocate(m_size);
-				m_limit = std::uninitialized_copy(first, last, m_data);
-				m_head = m_tail = m_data;
-			}
-			else {
-				m_data = allocate(cap);
-				m_limit = m_data + cap;
-				std::uninitialized_copy_n(first, m_size, m_data);
-				m_head = m_data;
-				m_tail = m_data + m_size;
-			}
+			m_data = allocate(m_size);
+			m_limit = std::uninitialized_copy(first, last, m_data);
+			m_head = m_tail = m_data;
 		}
 
 		template <class InIt, class = std::enable_if_t<detail::is_iterator_v<InIt>>>
@@ -723,19 +711,9 @@ namespace ancillary {
 			static_assert(std::is_convertible_v<typename std::iterator_traits<InIt>::value_type, value_type>);
 			static_assert(std::is_move_constructible_v<T>);
 			m_size = std::distance(first, last);
-			size_type cap = generate_size_bigger_than_or_equal(m_size);
-			if (m_size == cap) {
-				m_data = allocate(m_size);
-				m_limit = std::uninitialized_move(first, last, m_data);
-				m_head = m_tail = m_data;
-			}
-			else {
-				m_data = allocate(cap);
-				m_limit = m_data + cap;
-				std::uninitialized_move_n(first, m_size, m_data);
-				m_head = m_data;
-				m_tail = m_data + m_size;
-			}
+			m_data = allocate(m_size);
+			m_limit = std::uninitialized_move(first, last, m_data);
+			m_head = m_tail = m_data;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -788,13 +766,6 @@ namespace ancillary {
 
 		bool full() const noexcept { return capacity() == size(); }
 
-		size_type generate_size_bigger_than_or_equal(size_type target) const noexcept {
-			size_type sz = 1;
-			while (sz <= target)
-				sz <<= 2;
-			return sz;
-		}
-
 		void clear_and_deallocate() {
 			clear();
 			deallocate();
@@ -828,23 +799,13 @@ namespace ancillary {
 		}
 
 		template <class Pointer>
-		Pointer next(Pointer p, size_type n = 1) const noexcept {
-			size_type pos(p - m_data);
-			assert(capacity() > 0);
-			size_type mask = capacity() - 1;
-			pos += n;
-			pos &= mask;
-			return m_data + pos;
+		Pointer next(Pointer p, difference_type n = 1) const noexcept {
+			return p + ((m_limit - p) > n ? n : n - (m_limit - m_data));
 		}
 
 		template <class Pointer>
-		Pointer prev(Pointer p, size_type n = 1) const noexcept {
-			size_type pos(p - m_data);
-			assert(capacity() > 0);
-			size_type mask = capacity() - 1;
-			pos -= n;
-			pos &= mask;
-			return m_data + pos;
+		Pointer prev(Pointer p, difference_type n = 1) const noexcept {
+			return p - ((p - m_data) >= n ? n : n - (m_limit - m_data));
 		}
 
 		template <class Pointer>

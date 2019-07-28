@@ -204,6 +204,8 @@ TEST(DequeTests, CapacityTests) {
 		deque.push_back(i);
 	ASSERT_EQ(deque.size(), N);
 	ASSERT_NE(deque.capacity(), deque.size());
+	deque.shrink_to_fit();
+	ASSERT_EQ(deque.capacity(), deque.size());
 	deque.clear();
 	ASSERT_TRUE(deque.empty());
 	ASSERT_EQ(deque.max_size(), std::allocator_traits<std::allocator<int>>::max_size(std::allocator<int>{}));
