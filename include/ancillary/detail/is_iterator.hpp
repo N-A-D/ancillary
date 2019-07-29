@@ -14,7 +14,7 @@ namespace ancillary {
 
 		template <
 			class It
-		> class is_iterator<It, std::void_t<typename std::iterator_traits<It>::iterator_category>>
+		> struct is_iterator<It, std::void_t<typename std::iterator_traits<It>::iterator_category>>
 			: std::true_type {};
 
 		template <
