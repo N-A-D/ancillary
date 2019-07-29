@@ -429,6 +429,7 @@ namespace ancillary {
 			if (new_cap < capacity())
 				return;
 			expand(new_cap);
+			assert(new_cap == capacity());
 		}
 		void shrink_to_fit() {
 			if (empty())
@@ -656,20 +657,11 @@ namespace ancillary {
 			m_data = m_head = new_data;
 			m_tail = m_head + m_size;
 			m_limit = m_data + new_cap;
-			assert(!full());
 		}
 
 		void expand() {
-			static_assert(std::is_nothrow_move_constructible_v<T> || std::is_copy_constructible_v<T>);
 			assert(full());
-			size_type new_size = m_size;
-			size_type new_cap = std::max(2 * capacity(), size_type(1));
-			pointer new_data = allocate(new_cap);
-			migrate(new_data);
-			m_size = new_size;
-			m_data = m_head = new_data;
-			m_tail = m_head + m_size;
-			m_limit = m_data + new_cap;
+			expand(std::max(size_type(2) * capacity(), size_type(1)));
 			assert(!full());
 		}
 
