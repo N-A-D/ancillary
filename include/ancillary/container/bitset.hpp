@@ -156,6 +156,19 @@ namespace ancillary {
 
 				lshift %= block_size;
 				if (lshift != 0) {
+					// Bits are shifted upward as follows:
+					// 1. Left shift higher order block by shift
+					// 2. Right shift lower order block by block_size - shift
+					// 3. OR the values of parts 1 & 2
+					// 4. Left shift the lowest order block by shift (its higher order bits have been moved up)
+					// e.g., 
+					//   Block# 1   Block# 0
+					// [1001 0011][0100 1100] shift left by 3
+					// 1. [1001 1000]
+					// 2. [0000 0010]
+					// 3. [1001 1000] | [0000 0010] = [1001 1010]
+					// 4. [0100 1100] <<= 3 = [0110 0000]
+					// Final result: [1001 1010][0110 0000]
 					size_t rshift = block_size - lshift;
 					for (size_t i = last_block; i != 0; --i)
 						m_blocks[i] = (m_blocks[i] << lshift) | (m_blocks[i - 1] >> rshift);
@@ -182,6 +195,19 @@ namespace ancillary {
 
 				rshift %= block_size;
 				if (rshift != 0) {
+					// Bits are shifted downward as follows:
+					// 1. Right shift lower order blocks by shift
+					// 2. Left shift higher order blocks by block_size - shift
+					// 3. OR the values of parts 1 & 2
+					// 4. Right shift the highest order block by shift (its lowest order bits have been moved)
+					// e.g., 
+					//   Block# 1   Block# 0
+					// [1001 0011][0100 1100] shift right by 3
+					// 1. [0000 1001]
+					// 2. [0110 0000]
+					// 3. [0110 0000] | [0000 1001] = [0110 1001]
+					// 4. [1001 0011] >>= 3 = [0001 0010]
+					// Final result: [0001 0010][0110 1001]
 					size_t lshift = block_size - rshift;
 					for (size_t i = 0; i != last_block; ++i)
 						m_blocks[i] = (m_blocks[i] >> rshift) | (m_blocks[i + 1] << lshift);
