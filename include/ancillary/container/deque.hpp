@@ -230,14 +230,14 @@ namespace ancillary {
 		}
 
 		explicit deque(size_type n, const Allocator& alloc = Allocator())
-			: m_alloc(alloc)
+			: deque(alloc)
 		{
 			if (n > 0)
 				initialize_default_construct_n(n);
 		}
 
 		deque(size_type n, const value_type& v, const Allocator& alloc = Allocator())
-			: m_alloc(alloc)
+			: deque(alloc)
 		{
 			if (n > 0)
 				initialize_fill_n(n, v);
@@ -245,21 +245,21 @@ namespace ancillary {
 
 		template <class InIt, class = std::enable_if_t<detail::is_iterator_v<InIt>>>
 		deque(InIt first, InIt last, const Allocator& alloc = Allocator())
-			: m_alloc(alloc)
+			: deque(alloc)
 		{
 			if (std::distance(first, last) > 0)
 				initialize_copy(first, last);
 		}
 
 		deque(const deque& other)
-			: m_alloc(alloc_traits::select_on_container_copy_construction(other.get_allocator()))
+			: deque(alloc_traits::select_on_container_copy_construction(other.get_allocator()))
 		{
 			if (!other.empty())
 				initialize_copy(other.begin(), other.end());
 		}
 
 		deque(const deque& other, const Allocator& alloc)
-			: m_alloc(alloc)
+			: deque(alloc)
 		{
 			if (!other.empty())
 				initialize_copy(other.begin(), other.end());
@@ -271,7 +271,7 @@ namespace ancillary {
 		}
 
 		deque(deque&& other, const Allocator& alloc) noexcept(alloc_traits::is_always_equal::value)
-			: m_alloc(alloc)
+			: deque(alloc)
 		{
 			if (alloc_traits::is_always_equal::value || m_alloc == other.get_allocator())
 				steal_resources(std::move(other));

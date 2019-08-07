@@ -57,14 +57,25 @@ TEST(DequeTests, ConstructorTests) {
 	ASSERT_EQ(d4.size(), N);
 	ASSERT_EQ(d4.get_allocator(), alloc);
 
+	deque_t d4x(0, alloc);
+	ASSERT_TRUE(d4x.empty());
+	ASSERT_EQ(d4x.get_allocator(), alloc);
+
 	// n copy constructed element constructor
 	deque_t d5(N, 10);
 	ASSERT_EQ(d5.size(), N);
 	for (auto i : d5) ASSERT_EQ(i, 10);
 
+	deque_t d5x(0, 10);
+	ASSERT_TRUE(d5x.empty());
+
 	deque_t d6(N, 10, alloc);
 	ASSERT_EQ(d6.size(), N);
 	for (auto i : d6) ASSERT_EQ(i, 10);
+	ASSERT_EQ(d6.get_allocator(), alloc);
+
+	deque_t d6x(0, 10, alloc);
+	ASSERT_TRUE(d6x.empty());
 	ASSERT_EQ(d6.get_allocator(), alloc);
 
 	// Range based constructor
@@ -72,16 +83,29 @@ TEST(DequeTests, ConstructorTests) {
 	deque_t d7(deque.begin(), deque.end());
 	ASSERT_TRUE(std::equal(d7.begin(), d7.end(), deque.begin(), deque.end()));
 
+	deque_t d7x(deque.begin(), deque.begin());
+	ASSERT_TRUE(d7x.empty());
+
 	deque_t d8(deque.begin(), deque.end(), alloc);
 	ASSERT_TRUE(std::equal(d8.begin(), d8.end(), deque.begin(), deque.end()));
+
+	deque_t d8x(deque.begin(), deque.begin());
+	ASSERT_TRUE(d8x.empty());
 
 	// Copy constructor
 	deque_t d9(d8);
 	ASSERT_TRUE(std::equal(d9.begin(), d9.end(), d8.begin(), d8.end()));
 
+	deque_t d9x(deque_t{});
+	ASSERT_TRUE(d9x.empty());
+
 	deque_t d10(d9, alloc);
 	ASSERT_TRUE(std::equal(d10.begin(), d10.end(), d9.begin(), d9.end()));
 	ASSERT_EQ(d10.get_allocator(), alloc);
+
+	deque_t d10x(deque_t{}, alloc);
+	ASSERT_TRUE(d10x.empty());
+	ASSERT_EQ(d10x.get_allocator(), alloc);
 
 	// Move constructor
 	deque_t d11(std::move(d10));
@@ -91,6 +115,9 @@ TEST(DequeTests, ConstructorTests) {
 	deque_t d12(std::move(d11), alloc);
 	ASSERT_TRUE(d11.empty());
 	ASSERT_TRUE(std::equal(d12.begin(), d12.end(), d9.begin(), d9.end()));
+
+	deque_t d12x(std::move(deque_t{}), alloc);
+	ASSERT_TRUE(d12x.empty());
 
 	std::initializer_list<int> list = { 1, 2, 3, 4, 5 };
 
@@ -102,6 +129,9 @@ TEST(DequeTests, ConstructorTests) {
 	deque2_t d15(std::move(d14), my_alloc);
 	ASSERT_EQ(d14.size(), list.size());
 	ASSERT_TRUE(std::equal(d15.begin(), d15.end(), list.begin(), list.end()));
+
+	deque2_t d15x(std::move(deque2_t{}), my_alloc);
+	ASSERT_TRUE(d15x.empty());
 
 	deque_t d16(list);
 	ASSERT_EQ(d16.size(), list.size());
