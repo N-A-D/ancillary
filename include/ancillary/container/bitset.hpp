@@ -74,7 +74,28 @@ namespace ancillary {
 			CharT zero = CharT('0'),
 			CharT one = CharT('1'))
 		{
-			// TODO
+			if (pos > str.size())
+				throw std::out_of_range("Invalid string position");
+
+			// Limit the length of the initializing string
+			if (n > str.size() - pos)
+				n = str.size() - pos;
+
+			using str_size_t = typename std::basic_string<CharT, Traits, Alloc>::size_type;
+
+			for (str_size_t i = pos; i != pos + n; ++i)
+				if (!(Traits::eq(str[i], zero)) && !(Traits::eq(str[i], one)))
+					throw std::invalid_argument("Invalid string argument");
+
+			// Ensure the length of the string does not exceed the bitset size
+			if (n > static_cast<str_size_t>(size())) 
+				n = static_cast<str_size_t>(size());
+
+			// Initialize the bitset from the characters in the substring [pos, pos + n)
+			for (str_size_t i = 0; i != n; ++i)
+				// Test the characters in reverse since these are the least significant bits
+				if (Traits::eq(str[pos + n - i - 1], one)) 
+					set(i);
 		}
 
 		// Returns whether or not *this lexicographically compares less than rhs
@@ -372,7 +393,25 @@ namespace ancillary {
 	template <class CharT, class Traits, size_t N>
 	std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is, bitset<N>& x)
 	{
-		// TODO
+		std::basic_string<CharT, Traits> buffer;
+		typename std::basic_istream<CharT, Traits>::sentry ready(is); // To remove leading whitespace
+		if (ready) {
+			const CharT one('1');
+			const CharT zero('0');
+			CharT value;
+			while (is) {
+				is.get(value);
+				if (Traits::eq(value, one))
+					buffer.push_back(one);
+				else if (Traits::eq(value, zero))
+					buffer.push_back(zero);
+				else {
+					is.unget();
+					break;
+				}
+			}
+		}
+		x = bitset<N>(buffer);
 		return is;
 	}
 

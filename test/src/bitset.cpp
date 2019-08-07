@@ -34,31 +34,31 @@ TEST(BitsetTests, ConstructorTests) {
 	ancillary::bitset<8> b4(0xFFF0);
 	std::bitset<8> b4_invariant(0xFFF0);
 	ASSERT_TRUE(is_equal(b4, b4_invariant));
-	/*
+
 	// string constructor
 	std::string bit_string = "110010";
 	ancillary::bitset<8> b5(bit_string);
 	std::bitset<8> b5_invariant(bit_string);
 	ASSERT_TRUE(is_equal(b5, b5_invariant));
-
+	
 	ancillary::bitset<8> b6(bit_string, 2);
 	std::bitset<8> b6_invariant(bit_string, 2);
 	ASSERT_TRUE(is_equal(b6, b6_invariant));
-
+	
 	ancillary::bitset<8> b7(bit_string, 2, 3);
 	std::bitset<8> b7_invariant(bit_string, 2, 3);
 	ASSERT_TRUE(is_equal(b7, b7_invariant));
-
+	
 	// string constructor using zero/one digits other than '1' and '0'
 	std::string custom_bit_string = "xyxxyyxy";
 	ancillary::bitset<8> b8(custom_bit_string, 0, custom_bit_string.size(), 'x', 'y');
 	std::bitset<8> b8_invariant(custom_bit_string, 0, custom_bit_string.size(), 'x', 'y');
 	ASSERT_TRUE(is_equal(b8, b8_invariant));
-
-	ancillary::bitset<8> b9("xxxyyy", 8, 'x', 'y');
-	std::bitset<8> b9_invariant("xxxyyy", 8, 'x', 'y');
+	
+	ancillary::bitset<16> b9("xxxyyxyy", 6, 'x', 'y');
+	std::bitset<16> b9_invariant("xxxyyxyy", 6, 'x', 'y');
 	ASSERT_TRUE(is_equal(b9, b9_invariant));
-	*/
+
 }
 
 TEST(BitsetTests, ComparisonAndEqualityTests) {
@@ -269,7 +269,6 @@ TEST(BitsetTests, OutputOperatorTests) {
 }
 
 TEST(BitsetTests, InputStreamOperatorTests) {
-	/*
 	std::string bit_string = "00001111";
 	std::shuffle(bit_string.begin(), bit_string.end(), gen);
 	for (size_t i = 0; i != 256; ++i) {
@@ -279,9 +278,8 @@ TEST(BitsetTests, InputStreamOperatorTests) {
 		b1_stream >> b1;
 		std::bitset<8> b1_invariant;
 		b1_invariant_stream >> b1_invariant;
-		ASSERT_TRUE(b1.count(), b1_invariant.count());
+		ASSERT_EQ(b1.count(), b1_invariant.count());
 		ASSERT_TRUE(is_equal(b1, b1_invariant));
 		std::shuffle(bit_string.begin(), bit_string.end(), gen);
 	}
-	*/
 }
