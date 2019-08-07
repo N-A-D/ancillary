@@ -4,6 +4,7 @@
 #include <limits>
 #include <sstream>
 #include <algorithm>
+#include <set>
 #include "../../include/ancillary/container/bitset.hpp"
 
 template <size_t N>
@@ -282,4 +283,14 @@ TEST(BitsetTests, InputStreamOperatorTests) {
 		ASSERT_TRUE(is_equal(b1, b1_invariant));
 		std::shuffle(bit_string.begin(), bit_string.end(), gen);
 	}
+}
+
+TEST(BitsetTests, OrderedCollectionTests) {
+	std::uniform_int_distribution<uint64_t> dis(1, std::numeric_limits<uint64_t>::max() - 1);
+	using bitset_t = ancillary::bitset<64>;
+	std::set<bitset_t> set;
+	for (size_t i = 0; i != 256; ++i) {
+		set.emplace_hint(set.end(), bitset_t{ dis(gen) });
+	}
+	ASSERT_TRUE(std::is_sorted(set.begin(), set.end()));
 }
