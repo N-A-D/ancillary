@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "../include/employee.hpp"
 #include "../include/constants.hpp"
-#include "../../include/ancillary/container/flat_set.hpp"
+#include <ancillary/container/flat_set.hpp>
 
 using set_t = ancillary::flat_set<int>;
 

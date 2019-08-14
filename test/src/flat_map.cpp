@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include "../include/constants.hpp"
-#include "../../include/ancillary/container/flat_map.hpp"
+#include <ancillary/container/flat_map.hpp>
 
 using map_t = ancillary::flat_map<int, int>;
 using pair_t = std::pair<int, int>;

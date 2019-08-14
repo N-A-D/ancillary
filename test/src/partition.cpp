@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include "../include/constants.hpp"
-#include "../../include/ancillary/algorithm/partition.hpp"
+#include <ancillary/algorithm/partition.hpp>
 
 TEST(PartitionTests, UnstablePartitionTest) {
 	std::srand(std::time(nullptr));

@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include "../include/constants.hpp"
-#include "../../include/ancillary/container/sparse_set.hpp"
+#include <ancillary/container/sparse_set.hpp>
 
 using sparse_set_t = ancillary::sparse_set<std::uint64_t>;
 

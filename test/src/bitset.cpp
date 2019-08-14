@@ -5,7 +5,7 @@
 #include <sstream>
 #include <algorithm>
 #include <set>
-#include "../../include/ancillary/container/bitset.hpp"
+#include <ancillary/container/bitset.hpp>
 
 template <size_t N>
 bool is_equal(const ancillary::bitset<N>& bitset, const std::bitset<N>& invariant) {
